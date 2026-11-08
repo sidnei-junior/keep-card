@@ -1,2 +1,5 @@
 # keep-card
-Mono-repo que implementa cartão de uso para marcar recorrência na compra de itens e resgate de benefício
+Monorepo implementing a loyalty card to track recurring item purchases and redeem rewards.
+
+## Architecture
+See [docs/architecture](./docs/architecture/README.md) for the base event-driven architecture.
