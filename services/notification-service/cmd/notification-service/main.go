@@ -1,7 +1,5 @@
-// Command notification-service consumes keep-card events and sends notifications.
-//
-// "package main" + "func main()" is the entry point of a Go program.
-// By convention, executables live in cmd/<name>/main.go.
+// Command notification-service consumes keep-card events from RabbitMQ and
+// sends notifications. It shuts down gracefully on SIGINT or SIGTERM.
 package main
 
 import (
@@ -16,13 +14,9 @@ import (
 )
 
 func main() {
-	// Structured logs in JSON: easy to read by humans and by log tools.
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-
 	cfg := config.Load()
 
-	// The context is cancelled when we receive Ctrl+C (SIGINT) or SIGTERM
-	// (sent by Docker on "stop"), allowing a graceful shutdown.
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 

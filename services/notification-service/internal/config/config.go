@@ -1,18 +1,12 @@
-// Package config loads the service settings from environment variables.
-//
-// In Go, a "package" is a folder of .go files. Anything inside "internal/"
-// can only be imported by code in this same module, which keeps it private.
+// Package config loads the notification-service settings from environment variables.
 package config
 
 import "os"
 
-// Config holds all settings the service needs.
-//
-// A struct is Go's way to group fields (similar to a class without methods).
-// Fields starting with an uppercase letter are exported (public).
+// Config holds the settings needed to run the service.
 type Config struct {
-	AMQPURL   string // RabbitMQ connection string
-	QueueName string // queue this service consumes from
+	AMQPURL   string
+	QueueName string
 }
 
 // Load reads the configuration from the environment, falling back to
@@ -24,10 +18,7 @@ func Load() Config {
 	}
 }
 
-// getEnv returns the value of an environment variable or a fallback.
-// Lowercase name = unexported (only visible inside this package).
 func getEnv(key, fallback string) string {
-	// "if value, ok := ...; ok" declares variables scoped to the if block.
 	if value, ok := os.LookupEnv(key); ok && value != "" {
 		return value
 	}
