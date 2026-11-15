@@ -15,6 +15,16 @@ import (
 
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+	if err := run(logger); err != nil {
+		logger.Error("consumer stopped with error", "error", err)
+		os.Exit(1)
+	}
+
+	logger.Info("notification-service stopped")
+}
+
+func run(logger *slog.Logger) error {
 	cfg := config.Load()
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -22,11 +32,5 @@ func main() {
 
 	logger.Info("starting notification-service", "queue", cfg.QueueName)
 
-	c := consumer.New(cfg.AMQPURL, cfg.QueueName, logger)
-	if err := c.Run(ctx); err != nil {
-		logger.Error("consumer stopped with error", "error", err)
-		os.Exit(1)
-	}
-
-	logger.Info("notification-service stopped")
+	return consumer.New(cfg.AMQPURL, cfg.QueueName, logger).Run(ctx)
 }

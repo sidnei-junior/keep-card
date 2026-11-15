@@ -3,7 +3,9 @@ package consumer
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -30,7 +32,7 @@ func New(url, queue string, logger *slog.Logger) *Consumer {
 	return &Consumer{url: url, queue: queue, logger: logger}
 }
 
-// Run connects to RabbitMQ and consumes messages until ctx is cancelled or
+// Run connects to RabbitMQ and consumes messages until ctx is canceled or
 // the connection is lost.
 //
 // Messages are delivered one at a time and acknowledged manually only after
@@ -41,13 +43,13 @@ func (c *Consumer) Run(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("connect to rabbitmq: %w", err)
 	}
-	defer conn.Close()
+	defer c.closeResource("connection", conn)
 
 	ch, err := conn.Channel()
 	if err != nil {
 		return fmt.Errorf("open channel: %w", err)
 	}
-	defer ch.Close()
+	defer c.closeResource("channel", ch)
 
 	if err := ch.Qos(prefetchCount, 0, false); err != nil {
 		return fmt.Errorf("set qos: %w", err)
@@ -82,5 +84,11 @@ func (c *Consumer) handle(msg amqp.Delivery) {
 
 	if err := msg.Ack(false); err != nil {
 		c.logger.Error("ack failed", "error", err)
+	}
+}
+
+func (c *Consumer) closeResource(name string, closer io.Closer) {
+	if err := closer.Close(); err != nil && !errors.Is(err, amqp.ErrClosed) {
+		c.logger.Warn("failed to close "+name, "error", err)
 	}
 }

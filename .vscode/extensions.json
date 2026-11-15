@@ -3,6 +3,8 @@
     "editorconfig.editorconfig",
     "ms-azuretools.vscode-docker",
     "github.vscode-github-actions",
-    "pomdtr.excalidraw-editor"
+    "pomdtr.excalidraw-editor",
+    "golang.go",
+    "task.vscode-task"
   ]
 }

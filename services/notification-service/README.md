@@ -17,7 +17,21 @@ Messages are acknowledged **after** processing (manual ack, prefetch 1). If the 
 ## Requirements
 
 - Go 1.27+
+- [golangci-lint](https://golangci-lint.run/) v2 — Windows: `winget install GolangCI.golangci-lint`
+- [Task](https://taskfile.dev/) v3 — Windows: `winget install Task.Task`
 - Local RabbitMQ running with the topology created — see [docs/local-setup.md](../../docs/local-setup.md)
+
+## Tasks
+
+Common commands are defined in [`Taskfile.yml`](./Taskfile.yml). Run `task --list` to see them all.
+
+| Command | Description |
+| --- | --- |
+| `task lint` | Run golangci-lint (linters + formatting check) |
+| `task lint:fix` | Run golangci-lint and apply automatic fixes |
+| `task fmt` | Format code with goimports |
+
+Linter configuration lives in [`.golangci.yml`](./.golangci.yml).
 
 ## Configuration
 
