@@ -1,0 +1,17 @@
+version: "3"
+
+tasks:
+  lint:
+    desc: Run golangci-lint (linters + formatting check)
+    cmds:
+      - golangci-lint run ./...
+
+  lint:fix:
+    desc: Run golangci-lint and apply automatic fixes
+    cmds:
+      - golangci-lint run --fix ./...
+
+  fmt:
+    desc: Format code with goimports
+    cmds:
+      - golangci-lint fmt ./...

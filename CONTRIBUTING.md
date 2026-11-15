@@ -68,4 +68,8 @@ VS Code users: install the recommended extensions from [`.vscode/extensions.json
 
 ## Local setup
 
-See [docs/architecture](./docs/architecture/README.md) for an overview of the system and [docs/local-setup.md](./docs/local-setup.md) to run the local infrastructure (Docker, RabbitMQ). More setup steps (git hooks, services) will be added here as the project grows.
+See [docs/architecture](./docs/architecture/README.md) for an overview of the system and [docs/local-setup.md](./docs/local-setup.md) to run the local infrastructure (Docker, RabbitMQ).
+
+Each service lists its own requirements and commands in its README. Go services use [golangci-lint](https://golangci-lint.run/) and [Task](https://taskfile.dev/) (`task --list` inside the service folder).
+
+More setup steps (git hooks) will be added here as the project grows.

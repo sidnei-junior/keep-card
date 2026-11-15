@@ -6,5 +6,13 @@
   "editor.formatOnSave": true,
   "[markdown]": {
     "files.trimTrailingWhitespace": false
+  },
+  "[go]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "gopls": {
+    "formatting.local": "github.com/sidnei-junior/keep-card"
   }
 }
