@@ -24,6 +24,15 @@ Do **not** write:
 
 Clear names are the documentation: prefer named constants and well-named variables over a comment, e.g. `ch.Consume(queue, consumerTag, autoAck, exclusive, noLocal, noWait, nil)` instead of `false, // autoAck`.
 
+## Go testing
+
+- Use the standard library only (`testing`); no assertion libraries such as testify.
+- Write table-driven tests with `t.Run` subtests whenever there is more than one scenario.
+- Use `t.Setenv`, `t.TempDir` and similar helpers so tests clean up after themselves.
+- Keep business logic out of infrastructure code so it can be unit tested (e.g. an event handler interface separated from the RabbitMQ consumer).
+- Tests that need real infrastructure (RabbitMQ via testcontainers-go) go in files tagged `//go:build integration`.
+- Each service's quality gates (linters, coverage minimum) are listed in its README.
+
 ## Conventions
 
 - **Language:** code, commits, branch names and checklists in English; issue and PR descriptions in English and Brazilian Portuguese (EN + PT-BR).
