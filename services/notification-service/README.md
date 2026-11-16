@@ -12,7 +12,9 @@ From the `notification.all` queue (bound to the `keepcard.events` topic exchange
 
 `user.created`, `purchase.registered`, `reward.redeemed`, `stock.low`
 
-Messages are acknowledged **after** processing (manual ack, prefetch 1). If the service stops before acking, RabbitMQ redelivers the message.
+Messages are acknowledged **after** the handler succeeds (manual ack, prefetch 1). If the service stops before acking, RabbitMQ redelivers the message.
+
+If the handler fails, the message is **rejected without requeue** (`nack`, `requeue=false`) so a permanently invalid message cannot block the queue. These messages are currently dropped; a dead-letter queue is tracked in [#18](https://github.com/sidnei-junior/keep-card/issues/18).
 
 ## Requirements
 
@@ -30,8 +32,13 @@ Common commands are defined in [`Taskfile.yml`](./Taskfile.yml). Run `task --lis
 | `task lint` | Run golangci-lint (linters + formatting check) |
 | `task lint:fix` | Run golangci-lint and apply automatic fixes |
 | `task fmt` | Format code with goimports |
+| `task test` | Run unit tests (no Docker needed) |
+| `task test:integration` | Run unit and integration tests (requires Docker) |
+| `task coverage` | Run all tests and report coverage over `internal/` (requires Docker) |
 
-Linter configuration lives in [`.golangci.yml`](./.golangci.yml).
+Linter configuration lives in [`.golangci.yml`](./.golangci.yml). `gosec` is disabled for `_test.go` files, since test fixtures often look like credentials.
+
+Integration tests use [testcontainers-go](https://golang.testcontainers.org/) to start a throwaway RabbitMQ container, so Docker Desktop must be running. They do not use the RabbitMQ from `docker-compose.yml`.
 
 ## Configuration
 
@@ -71,7 +78,8 @@ go build -o bin/notification-service ./cmd/notification-service
 ```
 cmd/notification-service/   entry point (main.go)
 internal/config/            settings from environment variables
-internal/consumer/          RabbitMQ connection and message handling
+internal/consumer/          RabbitMQ connection, delivery and ack/nack
+internal/handler/           what to do with each event (Handler interface)
 ```
 
 Code under `internal/` can only be imported by this module.

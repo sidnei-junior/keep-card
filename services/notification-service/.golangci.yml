@@ -1,5 +1,9 @@
 version: "2"
 
+run:
+  build-tags:
+    - integration
+
 linters:
   default: standard
   enable:
@@ -17,6 +21,11 @@ linters:
             - sayRepetitiveInsteadOfStutters
     misspell:
       locale: US
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - gosec
 
 formatters:
   enable:
