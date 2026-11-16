@@ -13,6 +13,7 @@
     }
   },
   "gopls": {
-    "formatting.local": "github.com/sidnei-junior/keep-card"
+    "formatting.local": "github.com/sidnei-junior/keep-card",
+    "buildFlags": ["-tags=integration"]
   }
 }

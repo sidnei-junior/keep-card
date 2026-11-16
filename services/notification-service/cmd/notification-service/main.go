@@ -11,6 +11,7 @@ import (
 
 	"github.com/sidnei-junior/keep-card/services/notification-service/internal/config"
 	"github.com/sidnei-junior/keep-card/services/notification-service/internal/consumer"
+	"github.com/sidnei-junior/keep-card/services/notification-service/internal/handler"
 )
 
 func main() {
@@ -32,5 +33,7 @@ func run(logger *slog.Logger) error {
 
 	logger.Info("starting notification-service", "queue", cfg.QueueName)
 
-	return consumer.New(cfg.AMQPURL, cfg.QueueName, logger).Run(ctx)
+	h := handler.NewLogHandler(logger)
+
+	return consumer.New(cfg.AMQPURL, cfg.QueueName, h, logger).Run(ctx)
 }
