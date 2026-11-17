@@ -72,4 +72,23 @@ See [docs/architecture](./docs/architecture/README.md) for an overview of the sy
 
 Each service lists its own requirements and commands in its README. Go services use [golangci-lint](https://golangci-lint.run/) and [Task](https://taskfile.dev/) (`task --list` inside the service folder).
 
-More setup steps (git hooks) will be added here as the project grows.
+## Git hooks
+
+Git hooks are managed with [Lefthook](https://lefthook.dev/) and configured in [`lefthook.yml`](./lefthook.yml).
+
+Install once per clone:
+
+```bash
+winget install evilmartians.lefthook   # Windows; see the Lefthook docs for other systems
+lefthook install
+```
+
+| Hook | What it runs | When |
+| --- | --- | --- |
+| `pre-commit` | `task lint` in each affected service | Only if the commit has `.go` files from that service |
+| `commit-msg` | [Conventional Commits check](./.lefthook/commit-msg/conventional-commits.sh), header ≤ 72 characters | Always (`Merge`, `Revert`, `fixup!` and `squash!` are allowed) |
+| `pre-push` | `task test` (unit tests) in each affected service | Only if the pushed commits touch `.go` files from that service |
+
+Integration tests are not run by hooks, since they need Docker; CI runs them.
+
+`git commit --no-verify` skips the hooks. Use it only in emergencies — CI runs the same checks anyway.
