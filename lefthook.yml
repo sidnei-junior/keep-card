@@ -1,0 +1,19 @@
+pre-commit:
+  parallel: true
+  commands:
+    notification-service-lint:
+      root: services/notification-service/
+      glob: "*.go"
+      run: task lint
+
+commit-msg:
+  scripts:
+    conventional-commits.sh:
+      runner: sh
+
+pre-push:
+  commands:
+    notification-service-test:
+      root: services/notification-service/
+      glob: "*.go"
+      run: task test

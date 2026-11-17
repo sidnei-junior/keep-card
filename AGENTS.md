@@ -39,5 +39,6 @@ Clear names are the documentation: prefer named constants and well-named variabl
 - **Commits and PR titles:** [Conventional Commits](https://www.conventionalcommits.org/), imperative mood, optional free-form scope (usually the service name).
 - **Branches:** `<type>/<short-description>`, without the issue number.
 - **Merging:** `main` is protected; every change goes through a PR and is squash-merged.
+- **Git hooks:** Lefthook runs lint, commit message checks and unit tests (see [CONTRIBUTING.md](./CONTRIBUTING.md#git-hooks)). Never bypass them with `--no-verify`; fix the reported problem instead.
 - **Formatting:** follow [`.editorconfig`](./.editorconfig) (LF, UTF-8; tabs for Go, 4 spaces for Python, 2 spaces otherwise). Go code must be `gofmt`-clean.
 - **Decisions:** record significant architecture or technology decisions as ADRs in `docs/adr/`.
