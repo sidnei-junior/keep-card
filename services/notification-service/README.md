@@ -97,6 +97,14 @@ Rules every change to this service must meet. Implementation is tracked in the l
 | Race detector | `-race` enabled in CI (Linux); optional locally |
 | Coverage | **≥ 80%** over `internal/` (`cmd/` excluded), counting unit + integration tests, enforced in CI |
 
+### CI
+
+| Workflow | Runs | Required check |
+| --- | --- | --- |
+| [`notification-service-lint.yml`](../../.github/workflows/notification-service-lint.yml) | golangci-lint (pinned to v2.15.0) on PRs and pushes to `main`, only when this service or the workflow changes | `lint-gate` |
+
+`lint-gate` always runs and passes when the lint job passed or was skipped, so PRs that don't touch this service are not blocked.
+
 ### Linters
 
 Default set: `govet`, `errcheck`, `staticcheck`, `unused`, `ineffassign`.

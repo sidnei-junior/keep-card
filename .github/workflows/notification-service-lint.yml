@@ -1,0 +1,68 @@
+name: notification-service lint
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      service: ${{ steps.filter.outputs.service }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            service:
+              - 'services/notification-service/**'
+              - '.github/workflows/notification-service-lint.yml'
+
+  lint:
+    name: golangci-lint
+    needs: changes
+    if: needs.changes.outputs.service == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: services/notification-service/go.mod
+          cache-dependency-path: services/notification-service/go.sum
+      - uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.15.0
+          working-directory: services/notification-service
+
+  lint-gate:
+    name: lint-gate
+    needs: [changes, lint]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check lint result
+        env:
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          LINT_RESULT: ${{ needs.lint.result }}
+        run: |
+          echo "changes: $CHANGES_RESULT, lint: $LINT_RESULT"
+          if [ "$CHANGES_RESULT" != "success" ]; then
+            exit 1
+          fi
+          if [ "$LINT_RESULT" != "success" ] && [ "$LINT_RESULT" != "skipped" ]; then
+            exit 1
+          fi
