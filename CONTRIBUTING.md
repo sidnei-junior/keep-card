@@ -92,3 +92,7 @@ lefthook install
 Integration tests are not run by hooks, since they need Docker; CI runs them.
 
 `git commit --no-verify` skips the hooks. Use it only in emergencies — CI runs the same checks anyway.
+
+## Continuous integration
+
+GitHub Actions workflows live in [`.github/workflows/`](./.github/workflows/), one per service and check (e.g. `notification-service-lint.yml`). Each workflow runs only when its service changes, and a `*-gate` job reports the final result so it can be a required check in `main` branch protection. See each service's README for its CI checks.
